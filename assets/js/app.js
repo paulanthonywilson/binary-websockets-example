@@ -13,12 +13,29 @@ import "../css/app.scss"
 //     import socket from "./socket"
 //
 import "phoenix_html"
-import {Socket} from "phoenix"
+import { Socket } from "phoenix"
 import NProgress from "nprogress"
-import {LiveSocket} from "phoenix_live_view"
+import { LiveSocket } from "phoenix_live_view"
+import { ImageSocket } from "./image_socket.js"
+
+let Hooks = {};
+
+Hooks.ImageHook = {
+    mounted() {
+        let imageSocket = new ImageSocket(this.el);
+        imageSocket.connect();
+        this.socket = imageSocket;
+    },
+    updated() {
+        if (this.socket) this.socket.close();
+        let imageSocket = new ImageSocket(this.el);
+        imageSocket.connect();
+    }
+}
+
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
+let liveSocket = new LiveSocket("/live", Socket, { hooks: Hooks, params: { _csrf_token: csrfToken } })
 
 // Show progress bar on live navigation and form submits
 window.addEventListener("phx:page-loading-start", info => NProgress.start())

@@ -1,6 +1,8 @@
 defmodule StarjumpsWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :starjumps
 
+  alias StarjumpsWeb.Websockets.StarjumpSocket
+
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
@@ -15,6 +17,8 @@ defmodule StarjumpsWeb.Endpoint do
     longpoll: false
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+
+  socket StarjumpSocket.mount_path(), StarjumpSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
