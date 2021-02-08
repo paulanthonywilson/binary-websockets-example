@@ -1,5 +1,6 @@
 export class ImageSocket {
     constructor(img) {
+        console.log("new image socket");
         this.img = img;
         this.ws_url = img.dataset.binaryWsUrl;
     }
@@ -17,6 +18,7 @@ export class ImageSocket {
     }
 
     close() {
+        clearTimeout(this.heartBeatId);
         this.attemptReopen = false;
         if (this.socket) this.socket.close();
         this.socket = null;
@@ -24,9 +26,11 @@ export class ImageSocket {
 
     onOpen() {
         console.log("ws opened");
+        this.scheduleHeartBeat();
     }
 
     onClose() {
+        console.log(this.heartBeatId);
         this.maybeReopen();
         console.log("ws closed", this);
     }
@@ -38,7 +42,6 @@ export class ImageSocket {
 
     onMessage(messageEvent) {
         if (typeof messageEvent.data != "string") {
-            console.log(typeof messageEvent.data); // todo remove
             this.binaryMessage(messageEvent.data);
         }
     }
@@ -63,4 +66,19 @@ export class ImageSocket {
             if (this.isSocketClosed() && this.attemptReopen) this.connect();
         }, after);
     };
+
+    scheduleHeartBeat() {
+        let that = this;
+        this.heartBeatId = setTimeout(function () { that.sendHeartBeat(); }, 30000);
+    }
+
+    sendHeartBeat() {
+        if (this.socket) {
+            // Send a heartbeat message to the server to let it know
+            // we're still alive, avoiding timeout.
+            this.scheduleHeartBeat();
+            this.socket.send("💙");
+            console.log("h", this);
+        }
+    }
 }

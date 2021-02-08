@@ -18,7 +18,7 @@ defmodule StarjumpsWeb.Endpoint do
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
-  socket StarjumpSocket.mount_path(), StarjumpSocket
+  socket StarjumpSocket.base_mount_path() <> "/:token/:jump_rate", StarjumpSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #

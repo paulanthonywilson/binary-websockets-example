@@ -8,19 +8,15 @@ defmodule StarjumpsWeb.Websockets.StarjumpSocket do
 
   require Logger
 
-  alias Starjumps.Starjumping
+  alias Starjumps.{Starjumping, JumpRates}
 
   @base_mount_path "/star-jumping"
-  @mount_path @base_mount_path <> "/:token"
-  @default_frame_switch 1000
 
   @doc """
-  The base path used to mount on the EndPoint, up to the token
+  The base path used to mount on the EndPoint, without the token
   """
   @spec base_mount_path :: String.t()
   def base_mount_path, do: @base_mount_path
-
-  def mount_path, do: @mount_path
 
   @impl true
   def child_spec(_opts) do
@@ -29,29 +25,36 @@ defmodule StarjumpsWeb.Websockets.StarjumpSocket do
   end
 
   @impl true
-  def connect(_map) do
-    {:ok, %{}}
+  def connect(%{params: %{"token" => token, "jump_rate" => jump_rate}}) do
+    {:ok, %{token: token, jump_rate: String.to_integer(jump_rate)}}
   end
 
   @impl true
-  def init(_) do
+  def init(%{token: token, jump_rate: jump_rate}) do
     send(self(), :send_image)
-    {:ok, %{next_image_in: @default_frame_switch, frame: 0}}
+    JumpRates.subscribe(token)
+    {:ok, %{next_image_in: jump_rate, jump: 0}}
   end
 
   @impl true
   def handle_in({message, opts}, state) do
     Logger.debug(fn ->
-      "#{__MODULE__}.handle_in with message: #{inspect(message)}, opts: #{inspect(opts)}"
+      "#{__MODULE__} #{inspect(self())} handle_in with message: #{inspect(message)}, opts: #{
+        inspect(opts)
+      }"
     end)
 
     {:ok, state}
   end
 
   @impl true
-  def handle_info(:send_image, %{frame: frame, next_image_in: send_after} = state) do
+  def handle_info(:send_image, %{jump: jump, next_image_in: send_after} = state) do
     Process.send_after(self(), :send_image, send_after)
-    {:push, {:binary, Starjumping.image(frame)}, %{state | frame: frame + 1}}
+    {:push, {:binary, Starjumping.image(jump)}, %{state | jump: jump + 1}}
+  end
+
+  def handle_info({:jump_rate_change, new_next_image_in}, %{jump: jump} = state) do
+    {:push, {:binary, Starjumping.image(jump - 1)}, %{state | next_image_in: new_next_image_in}}
   end
 
   def handle_info(_, state) do
