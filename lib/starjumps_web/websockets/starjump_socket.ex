@@ -30,7 +30,8 @@ defmodule StarjumpsWeb.Websockets.StarjumpSocket do
   end
 
   @impl true
-  def init(%{token: token, jump_rate: jump_rate}) do
+  def init(%{token: token, jump_rate: jump_rate} = args) do
+    debug_msg(fn -> "init with #{inspect(args)}" end)
     send(self(), :send_image)
     JumpRates.subscribe(token)
     {:ok, %{next_image_in: jump_rate, jump: 0}}
@@ -38,11 +39,7 @@ defmodule StarjumpsWeb.Websockets.StarjumpSocket do
 
   @impl true
   def handle_in({message, opts}, state) do
-    Logger.debug(fn ->
-      "#{__MODULE__} #{inspect(self())} handle_in with message: #{inspect(message)}, opts: #{
-        inspect(opts)
-      }"
-    end)
+    debug_msg(fn -> "handle_in with message: #{inspect(message)}, opts: #{inspect(opts)}" end)
 
     {:ok, state}
   end
@@ -63,7 +60,11 @@ defmodule StarjumpsWeb.Websockets.StarjumpSocket do
 
   @impl true
   def terminate(reason, _state) do
-    Logger.debug(fn -> "#{__MODULE__} terminating because #{inspect(reason)}" end)
+    debug_msg(fn -> "terminating because #{inspect(reason)}" end)
     :ok
+  end
+
+  defp debug_msg(msg_fn) do
+    Logger.debug(fn -> "StarjumpSocket #{inspect(self())} " <> msg_fn.() end)
   end
 end
