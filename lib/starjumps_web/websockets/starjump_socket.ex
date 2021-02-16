@@ -50,8 +50,8 @@ defmodule StarjumpsWeb.Websockets.StarjumpSocket do
     {:push, {:binary, Starjumping.image(jump)}, %{state | jump: jump + 1}}
   end
 
-  def handle_info({:jump_rate_change, new_next_image_in}, %{jump: jump} = state) do
-    {:push, {:binary, Starjumping.image(jump - 1)}, %{state | next_image_in: new_next_image_in}}
+  def handle_info({:jump_rate_change, new_next_image_in}, state) do
+    {:ok, %{state | next_image_in: new_next_image_in}}
   end
 
   def handle_info(_, state) do
