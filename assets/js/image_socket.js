@@ -2,12 +2,14 @@ export class ImageSocket {
     constructor(img) {
         console.log("new image socket");
         this.img = img;
+        this.imageUrl = this.img.src
         this.ws_url = img.dataset.binaryWsUrl;
         this.scheduleHeartBeat();
     }
 
     updated() {
         this.ws_url = this.img.dataset.binaryWsUrl;
+        this.img.src = this.imageUrl;
     }
 
     connect() {
@@ -51,8 +53,8 @@ export class ImageSocket {
 
     binaryMessage(content) {
         let oldImageUrl = this.img.src;
-        let imageUrl = URL.createObjectURL(content);
-        this.img.src = imageUrl;
+        this.imageUrl = URL.createObjectURL(content);
+        this.img.src = this.imageUrl;
 
         if (oldImageUrl != "") {
             URL.revokeObjectURL(oldImageUrl);

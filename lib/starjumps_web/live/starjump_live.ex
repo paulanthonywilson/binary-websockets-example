@@ -25,11 +25,11 @@ defmodule StarjumpsWeb.StarjumpLive do
     ~L"""
     <div class="row">
       <div class="column">
-        <%= img_tag(Routes.static_path(@socket,  "/images/placeholder.jpg"),
-              data_binary_ws_url: @image_ws_url,
-              phx_hook: "ImageHook",
-              id: "star-jump-img") %>
-       </div>
+       <img data-binary-ws-url="<%= @image_ws_url %>"
+            id="star-jump-img"
+            phx-hook="ImageHook"
+            src="/images/placeholder.jpg">
+      </div>
       <div class="column">
           <form phx-change="change-jump-rate" class="change-jump-rate">
             <label for="jump-rate">Jump rate</label>

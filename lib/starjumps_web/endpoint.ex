@@ -12,9 +12,7 @@ defmodule StarjumpsWeb.Endpoint do
     signing_salt: "JYwEesmM"
   ]
 
-  socket "/socket", StarjumpsWeb.UserSocket,
-    websocket: true,
-    longpoll: false
+  socket "/socket", StarjumpsWeb.UserSocket, websocket: true, longpoll: false
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
