@@ -2,7 +2,7 @@
 
 Example Phoenix application illustrating using a custom [`Phoenix.Socket.Transport](https://hexdocs.pm/phoenix/1.5.7/Phoenix.Socket.Transport.html) implementation to send binary messages over a websocket. It alternates two images to show a stick figure doing star jumps.
 
-For a detailed description see the tutorial post, which is not posted at the time of writing this README.
+For a detailed description see the tutorial post, which is [here](https://furlough.merecomplexities.com/elixir/phoenix/tutorial/2021/02/19/binary-websockets-with-elixir-phoenix.html).
 
 # Installation and running
 
