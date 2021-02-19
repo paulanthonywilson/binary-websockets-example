@@ -56,7 +56,7 @@ export class ImageSocket {
         this.imageUrl = URL.createObjectURL(content);
         this.img.src = this.imageUrl;
 
-        if (oldImageUrl != "") {
+        if (oldImageUrl.startsWith("blob:")) {
             URL.revokeObjectURL(oldImageUrl);
         }
     }
