@@ -4,6 +4,8 @@ Example Phoenix application illustrating using a custom [`Phoenix.Socket.Transpo
 
 For a detailed description see the tutorial post, which is [here](https://furlough.merecomplexities.com/elixir/phoenix/tutorial/2021/02/19/binary-websockets-with-elixir-phoenix.html).
 
+A [Content Security Policy](https://content-security-policy.com) has been added for the purposes of [this post](https://furlough.merecomplexities.com/elixir/phoenix/security/2021/02/26/content-security-policy-configuration-in-phoenix.html).
+
 # Installation and running
 
 This is a standard Phoenix install so mmake sure you have [Elixir](https://elixir-lang.org/install.html) and [Node](https://nodejs.dev/learn/how-to-install-nodejs) installed.

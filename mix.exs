@@ -45,6 +45,7 @@ defmodule Starjumps.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:credo, "~> 1.5"},
+      {:sobelow, "~> 0.11.0", only: :dev},
       {:uuid, "~> 1.1"}
     ]
   end
